@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
+import "../coffeebase/SupplyChain.sol";
 
 /// Provides basic authorization control
 contract Ownable {
@@ -21,7 +22,7 @@ contract Ownable {
     }
 
     /// Define a function modifier 'onlyOwner'
-    modifier onlyOwner() {
+    modifier onlyOwner() virtual {
         require(isOwner());
         _;
     }
