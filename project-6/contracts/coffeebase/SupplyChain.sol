@@ -175,8 +175,7 @@ contract SupplyChain is FarmerRole, DistributorRole, RetailerRole, ConsumerRole 
         originFarmInformation : _originFarmInformation,
         originFarmLatitude : _originFarmLatitude,
         originFarmLongitude : _originFarmLongitude,
-        // TODO productID does not combine sku and upc as requested by the definition of the struct.
-        productID : _upc,
+        productID : sku + _upc,
         productNotes : _productNotes,
         productPrice : 0,
         itemState : State.Harvested,
