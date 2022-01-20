@@ -169,7 +169,7 @@ contract SupplyChain is FarmerRole, DistributorRole, RetailerRole, ConsumerRole 
         items[_upc] = Item({
         sku : sku,
         upc : _upc,
-        ownerID : msg.sender,
+        ownerID : _originFarmerID,
         originFarmerID : _originFarmerID,
         originFarmName : _originFarmName,
         originFarmInformation : _originFarmInformation,
@@ -219,7 +219,7 @@ contract SupplyChain is FarmerRole, DistributorRole, RetailerRole, ConsumerRole 
         items[_upc].itemState = State.Packed;
 
         // Emit the appropriate event
-        emit Processed(_upc);
+        emit Packed(_upc);
     }
 
     // Define a function 'sellItem' that allows a farmer to mark an item 'ForSale'
@@ -232,9 +232,8 @@ contract SupplyChain is FarmerRole, DistributorRole, RetailerRole, ConsumerRole 
     onlyFarmer
     {
         // Update the appropriate fields
-        Item memory item = items[_upc];
-        item.itemState = State.ForSale;
-        item.productPrice = _price;
+        items[_upc].itemState = State.ForSale;
+        items[_upc].productPrice = _price;
 
         // Emit the appropriate event
         emit ForSale(_upc);
@@ -248,19 +247,18 @@ contract SupplyChain is FarmerRole, DistributorRole, RetailerRole, ConsumerRole 
     forSale(_upc)
 
         // Call modifier to check if buyer has paid enough
-    paidEnough(_upc)
+    paidEnough(items[_upc].productPrice)
         // Call modifier to send any excess ether back to buyer
     checkValue(_upc)
     onlyDistributor
     {
-        Item memory item = items[_upc];
-        uint _price = item.productPrice;
+        uint _price = items[_upc].productPrice;
         // Update the appropriate fields - ownerID, distributorID, itemState
-        item.itemState = State.Sold;
-        item.ownerID = msg.sender;
-        item.distributorID = msg.sender;
+        items[_upc].itemState = State.Sold;
+        items[_upc].ownerID = msg.sender;
+        items[_upc].distributorID = msg.sender;
         // Transfer money to farmer
-        payable(item.originFarmerID).transfer(_price);
+        payable(items[_upc].originFarmerID).transfer(_price);
         // emit the appropriate event
         emit Sold(_upc);
     }
@@ -275,8 +273,7 @@ contract SupplyChain is FarmerRole, DistributorRole, RetailerRole, ConsumerRole 
     onlyDistributor
     {
         // Update the appropriate fields
-        Item memory item = items[_upc];
-        item.itemState = State.Shipped;
+        items[_upc].itemState = State.Shipped;
         // Emit the appropriate event
         emit Shipped(_upc);
     }
@@ -290,27 +287,29 @@ contract SupplyChain is FarmerRole, DistributorRole, RetailerRole, ConsumerRole 
     onlyRetailer
     {
         // Update the appropriate fields - ownerID, retailerID, itemState
-        Item memory item = items[_upc];
-        item.ownerID = msg.sender;
-        item.retailerID = msg.sender;
-        item.itemState = State.Received;
+        items[_upc].ownerID = msg.sender;
+        items[_upc].retailerID = msg.sender;
+        items[_upc].itemState = State.Received;
         // Emit the appropriate event
         emit Received(_upc);
     }
 
     // Define a function 'purchaseItem' that allows the consumer to mark an item 'Purchased'
     // Use the above modifiers to check if the item is received
-    function purchaseItem(uint _upc) public
+    function purchaseItem(uint _upc) public payable
         // Call modifier to check if upc has passed previous supply chain stage
     received(_upc)
         // Access Control List enforced by calling Smart Contract / DApp
     onlyConsumer
+        // Make sure that purchaser pays at least the product price
+    paidEnough(items[_upc].productPrice)
+        // refund purchaser possible excess value
+    checkValue(_upc)
     {
         // Update the appropriate fields - ownerID, consumerID, itemState
-        Item memory item = items[_upc];
-        item.ownerID = msg.sender;
-        item.consumerID = msg.sender;
-        item.itemState = State.Purchased;
+        items[_upc].ownerID = msg.sender;
+        items[_upc].consumerID = msg.sender;
+        items[_upc].itemState = State.Purchased;
         // Emit the appropriate event
         emit Purchased(_upc);
     }
@@ -329,15 +328,14 @@ contract SupplyChain is FarmerRole, DistributorRole, RetailerRole, ConsumerRole 
     )
     {
         // Assign values to the 8 parameters
-        Item memory item = items[_upc];
-        itemSKU = item.sku;
-        itemUPC = item.upc;
-        ownerID = item.ownerID;
-        originFarmerID = item.originFarmerID;
-        originFarmName = item.originFarmName;
-        originFarmInformation = item.originFarmInformation;
-        originFarmLatitude = item.originFarmLatitude;
-        originFarmLongitude = item.originFarmLongitude;
+        itemSKU = items[_upc].sku;
+        itemUPC = items[_upc].upc;
+        ownerID = items[_upc].ownerID;
+        originFarmerID = items[_upc].originFarmerID;
+        originFarmName = items[_upc].originFarmName;
+        originFarmInformation = items[_upc].originFarmInformation;
+        originFarmLatitude = items[_upc].originFarmLatitude;
+        originFarmLongitude = items[_upc].originFarmLongitude;
 
         return
         (
@@ -367,16 +365,15 @@ contract SupplyChain is FarmerRole, DistributorRole, RetailerRole, ConsumerRole 
     )
     {
         // Assign values to the 9 parameters
-        Item memory item = items[_upc];
-        itemSKU = item.sku;
-        itemUPC = item.upc;
-        productID = item.productID;
-        productNotes = item.productNotes;
-        productPrice = item.productPrice;
-        itemState = uint(item.itemState);
-        distributorID = item.distributorID;
-        retailerID = item.retailerID;
-        consumerID = item.consumerID;
+        itemSKU = items[_upc].sku;
+        itemUPC = items[_upc].upc;
+        productID = items[_upc].productID;
+        productNotes = items[_upc].productNotes;
+        productPrice = items[_upc].productPrice;
+        itemState = uint(items[_upc].itemState);
+        distributorID = items[_upc].distributorID;
+        retailerID = items[_upc].retailerID;
+        consumerID = items[_upc].consumerID;
 
         return
         (
