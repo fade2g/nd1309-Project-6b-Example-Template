@@ -21,15 +21,27 @@ Framework and versions used:
 - Web3.js v1.5.3
 
 ## Proof of Work
-- Contract Unit Tests
+### Contract Unit Tests
 ![solidty unit tests](images/solitidy_test_results.png)
 
-- Deployed Contract on Rinkeby Test Network: 0x2C4696cBC4abBfB3B0401AEF4A80f684398cF6a0
+### Deployed Contract on Rinkeby Test Network: 0x2C4696cBC4abBfB3B0401AEF4A80f684398cF6a0
 ![created contract in rinkeby](images/etherscan_rinkeby_contract.png)
+- Contract Address 0x2C4696cBC4abBfB3B0401AEF4A80f684398cF6a0 on rikeby network
 - Deployment Transaction 0x699f5c29674dca55a15dd374b2ff57427cdb5bbeb515b4ac6f1adb24d6ac88a5
+- [Contract on Eitherscan](https://rinkeby.etherscan.io/address/0x2c4696cbc4abbfb3b0401aef4a80f684398cf6a0)
 
-- transaction history (on local network)
+### frontend transaction history (on local network)
 ![transaction history on local host](images/contend_transaction_history.png)
+
+## UML Diagrams
+### Activity Diagram
+![activity diagram](images/uml_activity.jpg)
+### Sequence Diagram
+![sequence diagram](images/uml_sequence.jpg)
+### State Diagram
+![state diagram](images/uml_state.jpg)
+### Class Diagram
+![class diagram](images/uml_contracts.jpg)
 
 ## Getting Started
 
