@@ -25,8 +25,11 @@ Framework and versions used:
 ![solidty unit tests](images/solitidy_test_results.png)
 
 - Deployed Contract on Rinkeby Test Network: 0x2C4696cBC4abBfB3B0401AEF4A80f684398cF6a0
-![ccreated contract in rinkeby](images/etherscan_rinkeby_contract.png)
+![created contract in rinkeby](images/etherscan_rinkeby_contract.png)
 - Deployment Transaction 0x699f5c29674dca55a15dd374b2ff57427cdb5bbeb515b4ac6f1adb24d6ac88a5
+
+- transaction history (on local network)
+![transaction history on local host](images/contend_transaction_history.png)
 
 ## Getting Started
 
